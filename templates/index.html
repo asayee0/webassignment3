@@ -23,13 +23,18 @@
         <div class="row">
 
             <div class="col-6">
-                <ul class="pagination">
+                <ul>
                     {% for a in animelist %}
-                        <li class="page-item">{{ a[1] }}</li>
+                        <li>{{ a.name }}</li>
                     {% endfor %}
                 </ul>
             </div>
 
+            <div class="col-6">
+                {% block details %}
+                {% endblock %}
+            </div>
+            {#
             <div class="col-6">
                 <table class="table">
                     <thead>
@@ -59,7 +64,7 @@
                     </tbody>
                 </table>
             </div>
-
+            #}
         </div>
     </div>
 

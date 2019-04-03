@@ -1,22 +1,26 @@
+import csv, models
 from flask import Flask, render_template, request, redirect, url_for
-import csv
-import models
+from models import Anime
 
-app = Flask(__name__)
-app.run(debug=True)
-
+app = models.app
 models.initdb()
 db = models.db
 
 animelist = None
-with open('anime.csv', 'r', encoding = 'utf-8') as f:
+""" with open('anime.csv', 'r', encoding = 'utf-8') as f:
     reader = csv.reader(f)
     animelist = list(reader)
+ """
+""" animelist = Anime.query.all()
+animelist = list(map(lambda x: x.toDict(), animelist))
+response = jsonify(animelist) """
 
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template("index.html", animelist=animelist)
+    print (type(Anime.query.with_entities(Anime.name).all()))
+    #return "working"
+    return render_template("index.html", animelist=Anime.query.with_entities(Anime.name).all())
 
 @app.route('/addnew')
 def loadAddNewTemplate():
