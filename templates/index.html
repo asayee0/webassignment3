@@ -20,57 +20,26 @@
         <a href="{{ url_for('loadAddNewTemplate') }}">Add New</a>
     </button>
     <div class="container">
-        <div class="row">
+        <div class="row justify-content-between">
 
             <div class="col-6">
-                <ul class="pagination">
+                <ul class="list-group">
                     {% for a in animelist %}
-                        <li class="page-item">{{ a[1] }}</li>
+                    <a href="{{ url_for('details', result=a.name) }}">
+                        <li class="list-group-item">
+                            {{ a.name }}
+                        </li>
+                    </a>
                     {% endfor %}
                 </ul>
             </div>
 
             <div class="col-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Genre</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Episodes</th>
-                            <th scope="col">Rating</th>
-                            <th scope="col">Members</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for a in animelist %}
-                        <tr>
-                            <td>{{ a[0] }}</td>
-                            <td>{{ a[1] }}</td>
-                            <td>{{ a[2] }}</td>
-                            <td>{{ a[3] }}</td>
-                            <td>{{ a[4] }}</td>
-                            <td>{{ a[5] }}</td>
-                            <td>{{ a[6] }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                {# include "details.html" #}
+                {% block details %}
+                {% endblock %}
             </div>
 
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                    card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
         </div>
     </div>
 </body>

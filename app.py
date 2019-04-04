@@ -1,26 +1,23 @@
+import csv, models
 from flask import Flask, render_template, request, redirect, url_for
-import csv
-import models
+from models import Anime
 
-app = Flask(__name__)
-app.run(debug=True)
-
+app = models.app
 models.initdb()
 db = models.db
-
-animelist = None
-with open('anime.csv', 'r', encoding = 'utf-8') as f:
-    reader = csv.reader(f)
-    animelist = list(reader)
 
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template("index.html", animelist=animelist)
+    return render_template("index.html", animelist=Anime.query.with_entities(Anime.name).all())
+
+@app.route('/<result>', methods=['GET'])
+def details(result):
+    return render_template("details.html", anime = Anime.query.filter_by(name = result).first())
 
 @app.route('/addnew')
 def loadAddNewTemplate():
-    return render_template("addnew.html")
+    return render_template("addNew.html")
 
 @app.route('/addnew/request', methods=['POST'])
 def addnew():
@@ -52,12 +49,7 @@ def searchAnime():
             break
     print(anime)
         
-    return render_template("searchresult.html", anime=anime)
-
-""" @app.route('displaySingleAnime')
-def displaySingleAnime():
-    anime = 
-    return render_template("singleAnimeResult", anime=anime) """
+    return render_template("searchResult.html", anime=anime)
 
 #animeid animename animegenre animetype animenumepisodes animerating animemembers
 #animeid, animename, animegenre, animetype, animenumepisodes, animerating, animemembers
