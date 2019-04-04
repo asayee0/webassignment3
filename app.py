@@ -6,14 +6,16 @@ app = models.app
 models.initdb()
 db = models.db
 
+animelist = Anime.query.with_entities(Anime.name).all()
+
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template("index.html", animelist=Anime.query.with_entities(Anime.name).all())
+    return render_template("index.html", animelist=animelist)
 
 @app.route('/<result>', methods=['GET'])
 def details(result):
-    return render_template("details.html", anime = Anime.query.filter_by(name = result).first())
+    return render_template("index.html", animelist=animelist, anime=Anime.query.filter_by(name = result).first())
 
 @app.route('/addnew')
 def loadAddNewTemplate():
