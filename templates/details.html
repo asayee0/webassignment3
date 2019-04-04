@@ -1,16 +1,6 @@
 {% extends "index.html" %}
 
 {% block details %}
-{% if anime is none %}
-<div class="container">
-    <div class="card" style="width: 40rem;">
-        <div class="card-body">
-            <h5 class="card-title">Anime</h5>
-        </div>
-    </div>
-</div>
-
-{% else %}
 <div class="container">
     <div class="card" style="width: 40rem;">
         <div class="card-body">
@@ -38,6 +28,4 @@
         </div>
     </div>
 </div>
-{% endif %}
-
 {% endblock %}
