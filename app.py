@@ -6,25 +6,18 @@ app = models.app
 models.initdb()
 db = models.db
 
-animelist = None
-""" with open('anime.csv', 'r', encoding = 'utf-8') as f:
-    reader = csv.reader(f)
-    animelist = list(reader)
- """
-""" animelist = Anime.query.all()
-animelist = list(map(lambda x: x.toDict(), animelist))
-response = jsonify(animelist) """
-
 @app.route('/')
 @app.route('/home')
 def home():
-    print (type(Anime.query.with_entities(Anime.name).all()))
-    #return "working"
     return render_template("index.html", animelist=Anime.query.with_entities(Anime.name).all())
+
+@app.route('/<result>', methods=['GET'])
+def details(result):
+    return render_template("details.html", anime = Anime.query.filter_by(name = result).first())
 
 @app.route('/addnew')
 def loadAddNewTemplate():
-    return render_template("addnew.html")
+    return render_template("addNew.html")
 
 @app.route('/addnew/request', methods=['POST'])
 def addnew():
@@ -56,12 +49,7 @@ def searchAnime():
             break
     print(anime)
         
-    return render_template("searchresult.html", anime=anime)
-
-""" @app.route('displaySingleAnime')
-def displaySingleAnime():
-    anime = 
-    return render_template("singleAnimeResult", anime=anime) """
+    return render_template("searchResult.html", anime=anime)
 
 #animeid animename animegenre animetype animenumepisodes animerating animemembers
 #animeid, animename, animegenre, animetype, animenumepisodes, animerating, animemembers
