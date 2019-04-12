@@ -21,6 +21,7 @@ class Anime(db.Model):
     members = db.Column(db.Integer, nullable=False)
 
     def __init__(self, id, name, genre, showType, episodes, rating, members):
+        self.id = id
         self.name = name
         self.genre = genre
         self.showType = showType
