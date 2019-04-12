@@ -11,7 +11,16 @@
 
 <body>
     <div class="container">
-        <form action="/addnew" method="post">
+        {% if success is defined %}
+            {% if success==True %}
+            <p>Successfully added.</p>
+            {% else %}
+            <p>Error: {{ success }}</p>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="container">
+        <form action="/addnew/request" method="post">
             <div class="form-group">
                 <label>ID</label>
                 <input type="number" name="animeid" placeholder="12345" class="form-control">

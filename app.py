@@ -1,39 +1,53 @@
 import csv, models
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from models import Anime
 
 app = models.app
 models.initdb()
 db = models.db
 
+animelist = Anime.query.with_entities(Anime.name).all()
+
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template("index.html", animelist=Anime.query.with_entities(Anime.name).all())
+    return render_template("index.html", animelist=animelist)
 
 @app.route('/<result>', methods=['GET'])
 def details(result):
-    return render_template("details.html", anime = Anime.query.filter_by(name = result).first())
+    return render_template("index.html", animelist=animelist, anime=Anime.query.filter_by(name = result).first())
 
-@app.route('/addnew')
+@app.route('/addnew', methods=['GET', 'POST'])
 def loadAddNewTemplate():
     return render_template("addNew.html")
 
-@app.route('/addnew/request', methods=['POST'])
+@app.route('/addnew/request', methods=['GET', 'POST'])
 def addnew():
-    animeid = request.form['animeid']
-    animename = request.form['animename']
-    animegenre = request.form['animegenre']
-    animetype = request.form['animetype']
-    animenumepisodes = request.form['animenumepisodes']
-    animerating = request.form['animerating']
-    animemembers = request.form['animemembers']
+    if request.method == "POST":
+        animeid = request.form['animeid']
+        animename = request.form['animename']
+        animegenre = request.form['animegenre']
+        animetype = request.form['animetype']
+        animenumepisodes = request.form['animenumepisodes']
+        animerating = request.form['animerating']
+        animemembers = request.form['animemembers']
 
-    with open('anime.csv', 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow([animeid, animename, animegenre, animetype, animenumepisodes, animerating, animemembers])
+        if not animeid: success = "ID missing"
+        elif not animename: success = "Name missing"
+        elif not animegenre: success = "Genre missing"
+        elif not animetype: success = "Type missing"
+        elif not animenumepisodes: success = "Episodes missing"
+        elif not animerating: success = "Rating missing"
+        elif not animemembers: success = "Members missing"
+        else: success=True
+        
+        if success==True:
+            newAnime = Anime(animeid, animename, animegenre, animetype, animenumepisodes, animerating, animemembers)
+            db.session.add(newAnime)
+            db.session.commit()
+        
 
-    return redirect(url_for('home'))
+    return render_template("addNew.html", success=success)
 
 @app.route('/search')
 def loadSearchTemplate():
