@@ -171,6 +171,7 @@ def updateAnime():
     return render_template("update.html")
 
 @app.route('/delete', methods=['GET', 'POST'])
+@login_required
 def deleteAnime():
     if request.method == 'POST':
         animename = request.form['animename']
@@ -182,6 +183,7 @@ def deleteAnime():
     return render_template("delete.html")
 
 @app.route('/delete/<result>', methods=['GET', 'POST'])
+@login_required
 def deleteAnimeHome(result):
     animename = result
     anime = Anime.query.filter(func.lower(Anime.name) == func.lower(animename)).first()
