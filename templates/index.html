@@ -12,13 +12,28 @@
 </head>
 
 <body>
-    <button>
-        <a href="{{ url_for('loadSearchTemplate') }}">Search</a>
-    </button>
+    <div class="header">
+        {% if g.user is none %}
+        <p>Not Logged in</p>
+        {% else %}
+        <p>Welcome {{ g.user}}</p>
+        {% endif %}
+    </div>
 
-    <button>
-        <a href="{{ url_for('loadAddNewTemplate') }}">Add New</a>
-    </button>
+    <div class="container">
+        <button>
+            <a href="{{ url_for('addNewAnime') }}">Add New</a>
+        </button>
+        <button>
+            <a href="{{ url_for('searchAnime') }}">Search</a>
+        </button>
+        <button>
+            <a href="{{ url_for('updateAnime') }}">Update</a>
+        </button>
+        <button>
+            <a href="{{ url_for('deleteAnime') }}">Delete</a>
+        </button>
+    </div>
     <div class="container">
         <div class="row justify-content-between">
 
@@ -60,6 +75,19 @@
                                     <td>{{ anime.members }}</td>
                                 </tr>
                             </table>
+                            <button>
+                                <a href="#">Update</a>
+                            </button>
+                            <button>
+                                <a href="{{ url_for('deleteAnimeHome', result=anime.name) }}">Delete</a>
+                            </button>
+                            <div class="container">
+                                {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                {{ messages[0] }}
+                                {% endif %}
+                                {% endwith %}
+                            </div>
                         </div>
                     </div>
                 </div>

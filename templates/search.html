@@ -12,7 +12,7 @@
 
 <body>
     <div class="container">
-        <form action="/search/request" method="post">
+        <form action="/search" method="post">
             <div class="form-group">
                 <label>Name</label>
                 <input type="text" name="animename" placeholder="Fullmetal Alchemist: Brotherhood" class="form-control">
@@ -20,10 +20,35 @@
             <input type="submit" name="submitButton" value="Submit" class="btn btn-primary">
         </form>
     </div>
-    <div>
-        {% block result %}
-        {% endblock %}
+    {% if anime is defined %}
+    <div class="container">
+        <div class="card" style="width: 40rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ anime.name }}</h5>
+                <table class="table table-striped card-text">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Genre</th>
+                        <th>Type</th>
+                        <th>Episodes</th>
+                        <th>Rating</th>
+                        <th>Members</th>
+                    </tr>
+                    <tr>
+                        <td>{{ anime.id }}</td>
+                        <td>{{ anime.name }}</td>
+                        <td>{{ anime.genre }}</td>
+                        <td>{{ anime.showType }}</td>
+                        <td>{{ anime.episodes }}</td>
+                        <td>{{ anime.rating }}</td>
+                        <td>{{ anime.members }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
+    {% endif %}
 </body>
 
 </html>

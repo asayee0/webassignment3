@@ -29,5 +29,25 @@ class Anime(db.Model):
         self.rating = rating
         self.members = members
 
+    def toDict():
+        return {
+            "id": id,
+            "name": name,
+            "genre": genre,
+            "showType": showType,
+            "episodes": episodes,
+            "rating": rating,
+            "members": members
+        }
+
     def __repr__(self):
         return ('<Name %r> <Genre %r>' % (self.name, self.genre))
+    
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(80), nullable=False)
+    password = db.Column(db.String(80), nullable=False)
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password

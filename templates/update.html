@@ -6,21 +6,23 @@
     <title></title>
     <meta name="description" content="">
     <meta name="author" content="SitePoint">
-    <link rel="stylesheet" href="css/styles.css?v=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
+    Update Anime
     <div class="container">
         {% if success is defined %}
-            {% if success==True %}
-            <p>Successfully added.</p>
-            {% else %}
-            <p>Error: {{ success }}</p>
-            {% endif %}
+        {% if success==True %}
+        <p>Successfully added.</p>
+        {% else %}
+        <p>Error: {{ success }}</p>
+        {% endif %}
         {% endif %}
     </div>
     <div class="container">
-        <form action="/addnew" method="post">
+        <form action="/addnew/request" method="post">
             <div class="form-group">
                 <label>ID</label>
                 <input type="number" name="animeid" placeholder="12345" class="form-control">
