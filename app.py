@@ -1,90 +1,18 @@
-import csv, models
+import csv, models, auth
 from flask import (
-    Flask, render_template, request, redirect, url_for, jsonify, flash, session, g
+    Blueprint, Flask, render_template, request, redirect, url_for, jsonify, flash
 )
-import functools
 from sqlalchemy import func
 from models import Anime, User
-from werkzeug import check_password_hash, generate_password_hash
 
 app = models.app
 models.initdb()
 db = models.db
 app.secret_key = 'info2606'
 
+app.register_blueprint(auth.bp)
+
 animelist = Anime.query.with_entities(Anime.name).all()
-
-@app.route('/register', methods=('GET', 'POST'))
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        error = None
-
-        if not username:
-            error = 'Username is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif User.query.filter_by(username=username).first() is not None:
-            error = "User is already registered."
-
-        print(error)
-
-        if error is None:
-            hashedPw = generate_password_hash(password)
-            db.session.add(User(username, hashedPw))
-            db.session.commit()
-            return redirect(url_for('login'))
-
-    return render_template('register.html')
-
-@app.route('/login', methods=('GET', 'POST'))
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        error = None
-        user = User.query.filter_by(username=username).first()
-
-        if user is None:
-            error = 'Incorrect username.'
-            print(username)
-        elif not check_password_hash(user.password, password):
-            error = 'Incorrect password.'
-            print(password)
-
-        if error is None:
-            session.clear()
-            session['user_id'] = user.id
-            return redirect(url_for('home'))
-
-        print(error)
-
-    return render_template('login.html')
-
-@app.before_request
-def load_logged_in_user():
-    user_id = session.get('user_id')
-
-    if user_id is None:
-        g.user = None
-    else:
-        g.user = User.query.filter_by(id=user_id).first().username
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('home'))
-
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('login'))
-
-        return view(**kwargs)
-
-    return wrapped_view
 
 @app.route('/')
 @app.route('/home')
@@ -96,7 +24,7 @@ def details(result):
     return render_template("index.html", animelist=animelist, anime=Anime.query.filter_by(name = result).first())
 
 @app.route('/addnew', methods=['GET', 'POST'])
-@login_required
+@auth.login_required
 def addNewAnime():
     if request.method == "POST":
         animeid = request.form['animeid']
@@ -120,6 +48,8 @@ def addNewAnime():
             newAnime = Anime(animeid, animename, animegenre, animetype, animenumepisodes, animerating, animemembers)
             db.session.add(newAnime)
             db.session.commit()
+            animelist = Anime.query.with_entities(Anime.name).all()
+
         return render_template("addNew.html", success=success)
     else:
         return render_template("addNew.html")
@@ -133,11 +63,13 @@ def searchAnime():
     else:
         return render_template("search.html")
 
-@app.route('/update', methods=['GET', 'POST'])
-@login_required
-def updateAnime():
+@app.route('/update/<name>', methods=['GET', 'POST'])
+@auth.login_required
+def updateAnime(name):
+    anime = Anime.query.filter(func.lower(Anime.name) == func.lower(name)).first()
     if request.method == "POST":
         error = None
+    
         animeid = request.form['animeid']
         animename = request.form['animename']
         animegenre = request.form['animegenre']
@@ -146,8 +78,11 @@ def updateAnime():
         animerating = request.form['animerating']
         animemembers = request.form['animemembers']
 
-        anime = Anime.query.filter(func.lower(Anime.name) == func.lower(animename)).first()
-        if anime is None: error = "Anime does not exist"
+        anime = Anime.query.filter_by(id=animeid).first()
+
+        if anime is None: 
+            error = "Anime does not exist"
+            print("Anime does not exist")
         if not animeid: error = "ID missing"
         elif not animename: error = "Name missing"
         elif not animegenre: error = "Genre missing"
@@ -155,7 +90,6 @@ def updateAnime():
         elif not animenumepisodes: error = "Episodes missing"
         elif not animerating: error = "Rating missing"
         elif not animemembers: error = "Members missing"
-        
         if error is None:
             anime.id = animeid
             anime.name = animename
@@ -165,31 +99,33 @@ def updateAnime():
             anime.rating = animerating
             anime.members = animemembers
             db.session.commit()
-        else:
-            flash(error)
+            animelist = Anime.query.with_entities(Anime.name).all()
+        
+        flash(error)
+        return redirect(url_for('details', result=animename))
     
-    return render_template("update.html")
+    return render_template("update.html", anime=anime)
 
 @app.route('/delete', methods=['GET', 'POST'])
-@login_required
+@auth.login_required
 def deleteAnime():
     if request.method == 'POST':
         animename = request.form['animename']
         anime = Anime.query.filter(func.lower(Anime.name) == func.lower(animename)).first()
         db.session.delete(anime)
         db.session.commit()
-        flash("Successfully deleted")
+        animelist = Anime.query.with_entities(Anime.name).all()
         
     return render_template("delete.html")
 
-@app.route('/delete/<result>', methods=['GET', 'POST'])
-@login_required
-def deleteAnimeHome(result):
-    animename = result
+@app.route('/delete/<name>', methods=['GET', 'POST'])
+@auth.login_required
+def deleteAnimeHome(name):
+    animename = name
     anime = Anime.query.filter(func.lower(Anime.name) == func.lower(animename)).first()
     db.session.delete(anime)
     db.session.commit()
-    flash("Successfully deleted")
+    animelist = Anime.query.with_entities(Anime.name).all()
     return redirect(url_for('home'))
 
 #animeid animename animegenre animetype animenumepisodes animerating animemembers

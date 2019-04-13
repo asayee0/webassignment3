@@ -12,15 +12,10 @@
 
 <body>
     <div class="header">
-        Login
-        {% if g.user is none %}
-        Not Logged in
-        {% else %}
-        Welcome {{ g.user}}
-        {% endif %}
+        <h1>Login</h1>
     </div>
     <div class="container">
-        <form action="/login" method="post">
+        <form action="/auth/login" method="post">
             <input type="text" name="username" placeholder="Username">
             <input type="text" name="password" placeholder="Password">
             <input type="submit" value="Submit">
