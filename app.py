@@ -27,6 +27,7 @@ def details(result):
 @auth.login_required
 def addNewAnime():
     if request.method == "POST":
+        error = None
         animeid = request.form['animeid']
         animename = request.form['animename']
         animegenre = request.form['animegenre']
@@ -35,33 +36,31 @@ def addNewAnime():
         animerating = request.form['animerating']
         animemembers = request.form['animemembers']
 
-        if not animeid: success = "ID missing"
-        elif not animename: success = "Name missing"
-        elif not animegenre: success = "Genre missing"
-        elif not animetype: success = "Type missing"
-        elif not animenumepisodes: success = "Episodes missing"
-        elif not animerating: success = "Rating missing"
-        elif not animemembers: success = "Members missing"
-        else: success=True
+        if not animeid: error = "ID missing"
+        elif not animename: error = "Name missing"
+        elif not animegenre: error = "Genre missing"
+        elif not animetype: error = "Type missing"
+        elif not animenumepisodes: error = "Episodes missing"
+        elif not animerating: error = "Rating missing"
+        elif not animemembers: error = "Members missing"
+
+        flash(error)
         
-        if success==True:
+        if error is None:
             newAnime = Anime(animeid, animename, animegenre, animetype, animenumepisodes, animerating, animemembers)
             db.session.add(newAnime)
             db.session.commit()
-            animelist = Anime.query.with_entities(Anime.name).all()
-
-        return render_template("addNew.html", success=success)
-    else:
-        return render_template("addNew.html")
+            
+    return render_template("addNew.html")
 
 @app.route('/search', methods=['GET', 'POST'])
 def searchAnime():
     if request.method == 'POST':
         animename = request.form['animename']
         anime = Anime.query.filter(func.lower(Anime.name) == func.lower(animename)).first()
-        return render_template("search.html", anime=anime)
-    else:
-        return render_template("search.html")
+        if anime is not None:
+            return redirect(url_for("details", result=anime.name))
+    return render_template("search.html")
 
 @app.route('/update/<name>', methods=['GET', 'POST'])
 @auth.login_required
@@ -99,7 +98,7 @@ def updateAnime(name):
             anime.rating = animerating
             anime.members = animemembers
             db.session.commit()
-            animelist = Anime.query.with_entities(Anime.name).all()
+            
         
         flash(error)
         return redirect(url_for('details', result=animename))
@@ -114,7 +113,7 @@ def deleteAnime():
         anime = Anime.query.filter(func.lower(Anime.name) == func.lower(animename)).first()
         db.session.delete(anime)
         db.session.commit()
-        animelist = Anime.query.with_entities(Anime.name).all()
+        
         
     return render_template("delete.html")
 
@@ -125,7 +124,7 @@ def deleteAnimeHome(name):
     anime = Anime.query.filter(func.lower(Anime.name) == func.lower(animename)).first()
     db.session.delete(anime)
     db.session.commit()
-    animelist = Anime.query.with_entities(Anime.name).all()
+    
     return redirect(url_for('home'))
 
 #animeid animename animegenre animetype animenumepisodes animerating animemembers

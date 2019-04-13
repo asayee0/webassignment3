@@ -11,11 +11,17 @@
 </head>
 
 <body>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {{ messages[0] }}
-    {% endif %}
-    {% endwith %}
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
     <div class="container">
         <form action="/delete" method="post">
             <div class="form-group">

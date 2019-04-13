@@ -14,31 +14,41 @@
 <body>
     <div class="header">
         <div class="row">
-            <div class="card" style="width: 15%;">
-                <div class="card-body">
-                    <p class="card-text">
-                        {% if g.user is none %}
-                        Not Logged in
-                        {% else %}
-                        Welcome {{ g.user}}
-                        {% endif %}
-                    </p>
-                    <a href="{{ url_for('auth.login') }}">Login</a>
-                    <a href="{{ url_for('auth.register') }}">Register</a>
-                    <br>
-                    <a href="{{ url_for('auth.logout') }}">Logout</a>
+            <div class="col-10">
+                <div class="card" style="width: 10em">
+                    <div class="card-body">
+                        <p class="card-text">
+                            {% if g.user is none %}
+                            Not Logged in
+                            {% else %}
+                            Welcome {{ g.user}}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1">
+                <div class="card" style="width: 10em">
+                    <div class="card-body">
+                        <p class="card-text">
+                            <a href="{{ url_for('auth.login') }}">Login</a>
+                            <a href="{{ url_for('auth.register') }}">Register</a>
+                            <br>
+                            <a href="{{ url_for('auth.logout') }}">Logout</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <button>
-            <a href="{{ url_for('addNewAnime') }}">Add New</a>
-        </button>
-        <button>
-            <a href="{{ url_for('searchAnime') }}">Search</a>
-        </button>
+        <a href="{{ url_for('addNewAnime') }}">
+            <button class="btn btn-primary">Add New</button>
+        </a>
+        <a href="{{ url_for('searchAnime') }}">
+            <button class="btn btn-primary">Search</button>
+        </a>
     </div>
     <div class="container">
         <div class="row justify-content-between">
@@ -81,17 +91,21 @@
                                     <td>{{ anime.members }}</td>
                                 </tr>
                             </table>
-                            <button>
-                                <a href="{{ url_for('updateAnime', name=anime.name) }}">Update</a>
-                            </button>
-                            <button>
-                                <a href="{{ url_for('deleteAnimeHome', name=anime.name) }}">Delete</a>
-                            </button>
+                            <a href="{{ url_for('updateAnime', name=anime.name) }}">
+                                <button class="btn btn-primary">Update</button>
+                            </a>
+                            <a href="{{ url_for('deleteAnimeHome', name=anime.name) }}">
+                                <button class="btn btn-primary">Delete</button>
+                            </a>
                             <div class="container">
                                 {% with messages = get_flashed_messages() %}
-                                {% if messages %}
-                                {{ messages[0] }}
-                                {% endif %}
+                                    {% if messages %}
+                                    <ul class=flashes>
+                                        {% for message in messages %}
+                                            <li>{{ message }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
                                 {% endwith %}
                             </div>
                         </div>
