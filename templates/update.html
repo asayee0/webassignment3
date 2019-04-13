@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="author" content="SitePoint">
+    <link rel="stylesheet" href="css/styles.css?v=1.0">
+</head>
+
+<body>
+    Update Anime
+    <div class="container">
+        {% if success is defined %}
+            {% if success==True %}
+            <p>Successfully added.</p>
+            {% else %}
+            <p>Error: {{ success }}</p>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="container">
+        <form action="/addnew/request" method="post">
+            <div class="form-group">
+                <label>ID</label>
+                <input type="number" name="animeid" placeholder="12345" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="animename" placeholder="Fullmetal Alchemist: Brotherhood" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Genre</label>
+                <input type="text" name="animegenre" placeholder="Action, Adventure" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <input type="text" name="animetype" placeholder="TV" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Number of Episodes</label>
+                <input type="number" name="animenumepisodes" placeholder="64" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Rating</label>
+                <input type="number" name="animerating" placeholder="9.4" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Number of Members</label>
+                <input type="number" name="animemembers" placeholder="793665" class="form-control">
+            </div>
+            <input type="submit" name="submitButton" value="Submit" class="btn btn-primary">
+        </form>
+    </div>
+
+</body>
+
+</html>
