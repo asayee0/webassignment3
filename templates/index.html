@@ -79,8 +79,15 @@
                                 <a href="#">Update</a>
                             </button>
                             <button>
-                                <a href="#">Delete</a>
+                                <a href="{{ url_for('deleteAnimeHome', result=anime.name) }}">Delete</a>
                             </button>
+                            <div class="container">
+                                {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                {{ messages[0] }}
+                                {% endif %}
+                                {% endwith %}
+                            </div>
                         </div>
                     </div>
                 </div>

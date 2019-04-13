@@ -178,9 +178,17 @@ def deleteAnime():
         db.session.delete(anime)
         db.session.commit()
         flash("Successfully deleted")
-        return render_template("delete.html")
-    else:
-        return render_template("delete.html")
+        
+    return render_template("delete.html")
+
+@app.route('/delete/<result>', methods=['GET', 'POST'])
+def deleteAnimeHome(result):
+    animename = result
+    anime = Anime.query.filter(func.lower(Anime.name) == func.lower(animename)).first()
+    db.session.delete(anime)
+    db.session.commit()
+    flash("Successfully deleted")
+    return redirect(url_for('home'))
 
 #animeid animename animegenre animetype animenumepisodes animerating animemembers
 #animeid, animename, animegenre, animetype, animenumepisodes, animerating, animemembers
